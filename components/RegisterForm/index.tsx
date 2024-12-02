@@ -2,18 +2,35 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
-
+import { useRouter } from "next/navigation"
 
 const RegisterForm = () => {
+
+  const router = useRouter()
+
   const [ email, setEmail ] = useState<string>("")
   const [ fullName, setFullName ] = useState<string>("")
   const [ password, setPassword ] = useState<string>("")
   const [ error, setError ] = useState<string>("")
 
-  const handleSubmit = (event: any) => {
+  const handleSubmit = async (event: any) => {
     event.preventDefault() 
     if(!fullName || !email || !password) return setError("All fields are required")
-    
+        
+        // Registers user but will need to check if user exist
+        try {
+            const registerUser = await fetch("api/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({fullName, email, password})
+            })
+
+            registerUser.ok ? router.push("/") : console.log("user registration failed")
+        } catch (error) {
+            console.log("error during registration", error)
+        }
   }
 
   return (
