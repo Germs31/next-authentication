@@ -19,6 +19,20 @@ const RegisterForm = () => {
         
         // Registers user but will need to check if user exist
         try {
+            console.log(email, 'hello???')
+            const userExist = await fetch("api/userExist", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({email})
+            })
+            const parsedUserExist = await userExist.json()
+            console.log(parsedUserExist)
+
+            if(parsedUserExist.user) return setError("User already exist")
+
+
             const registerUser = await fetch("api/register", {
                 method: "POST",
                 headers: {
@@ -46,11 +60,10 @@ const RegisterForm = () => {
                 {
                     error && (
                         <div className="text-sm text-white w-fit bg-red-500 py-1 px-3 rounded-md mt-2">
-                            error msg
+                            {error}
                         </div>
                     )
                 }
-
                 <Link className="text-sm mt-3 text-right" href={"/"}>
                     have an account? <span className="underline">Login</span>
                 </Link>
